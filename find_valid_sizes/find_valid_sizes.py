@@ -79,7 +79,7 @@ def fits_in_cache(cache_size, input_csv, outdir, max_file_size=200):
     df['generate'] = (df['all_fit'] == False) & (df['coo_size'] <= max_file_size)
 
     # Save to a new file 
-    df.to_csv(f'{Path(input_csv).stem}_cache_{cache_size}.stats', index=False)
+    df.to_csv(f'{outdir}/{Path(input_csv).stem}_cache_{cache_size}.stats', index=False)
 
 
 
@@ -115,7 +115,7 @@ def generate_stats_files(init_vals, min_k, max_k, steps_per_val, init_val_delta,
         curr_file_path = f'{outdir}/k_{i}.csv'
         generated_files_paths.append(curr_file_path)
         with open(curr_file_path, 'w') as f:
-            f.write(f'x0,x1,x2,x3,num_nodes,num_edges,coo_size,csr_size,csc_size\n')
+            f.write(f'x0,x1,x2,x3,k,num_nodes,num_edges,coo_size,csr_size,csc_size\n')
         print(f'K = {i}')
         for j in range(len(init_vals_new)):
             for s in range(steps_per_val):
@@ -129,7 +129,7 @@ def generate_stats_files(init_vals, min_k, max_k, steps_per_val, init_val_delta,
                 csc_size_ = csc_size(num_nodes, num_edges)
 
                 with open(curr_file_path, 'a') as f:
-                    f.write(f'{init_vals_new[0]:.3f},{init_vals_new[1]:.3f},{init_vals_new[2]:.3f},{init_vals_new[3]:.3f},{num_nodes},{num_edges},{coo_size_},{csr_size_},{csc_size_}\n')
+                    f.write(f'{init_vals_new[0]:.3f},{init_vals_new[1]:.3f},{init_vals_new[2]:.3f},{init_vals_new[3]:.3f},{i},{num_nodes},{num_edges},{coo_size_},{csr_size_},{csc_size_}\n')
                 
     return generated_files_paths
 
