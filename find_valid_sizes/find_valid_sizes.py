@@ -79,7 +79,7 @@ def fits_in_cache(cache_size, input_csv, outdir, max_file_size=200):
     df['generate'] = (df['all_fit'] == False) & (df['coo_size'] <= max_file_size)
 
     # Save to a new file 
-    df.to_csv(f'{Path(input_csv).stem}_cache_{cache_size}.stats')
+    df.to_csv(f'{Path(input_csv).stem}_cache_{cache_size}.stats', index=False)
 
 
 
