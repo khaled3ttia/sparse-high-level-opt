@@ -6,6 +6,7 @@ import subprocess
 #import swifter 
 import dask.dataframe as dd
 import os
+from dask.distributed import Client, LocalCluster
 
 def run_cmd(row, krongen,k_val,outdir):
     outfile = f"k{k_val}_{row['x0']:.3f}_{row['x1']:.3f}_{row['x2']:.3f}_{row['x3']:.3f}"
@@ -30,6 +31,8 @@ def main(args):
     os.makedirs(outdir, exist_ok=True)
     files_to_process = glob.glob(f'{indir}/*.stats')
     
+    cluster = LocalCluster()
+    client = Client(cluster)
 
     def run_cmd_dask(df): return df.apply(run_cmd, args=(krongen,k_val,outdir,), axis=1)
 
