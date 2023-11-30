@@ -3,7 +3,8 @@ import glob
 import argparse
 from pathlib import Path
 import subprocess 
-import swifter 
+#import swifter 
+import dask.dataframe as dd
 import os
 
 def run_cmd(row, krongen,k_val,outdir):
@@ -14,25 +15,37 @@ def run_cmd(row, krongen,k_val,outdir):
 
     return result_gen.returncode
 
+'''
+def run_cmd_dask(df):
+    return df.apply(run_cmd, args=(krongen,k_val,outdir,), axis=1)
+'''
+
 def main(args):
     
+    nthreads = 16
 
     indir = args.indir
     krongen = args.krongen
     outdir = args.outdir 
     os.makedirs(outdir, exist_ok=True)
     files_to_process = glob.glob(f'{indir}/*.stats')
+    
+
+    def run_cmd_dask(df): return df.apply(run_cmd, args=(krongen,k_val,outdir,), axis=1)
 
     for file in files_to_process:
         df = pd.read_csv(file)
         k_val = int(f"{Path(file).stem.split('_')[1]}")
         to_generate = df[df['generate']].copy()
-
+        count_generate = len(to_generate.index)
+        
+        to_generate_d = dd.from_pandas(to_generate, npartitions=int(count_generate/nthreads))
         if not to_generate.empty:
             print(f'to_generate : {to_generate}')
             print(len(to_generate))
-            to_generate['exit_code'] = to_generate.swifter.set_dask_scheduler('processes').set_npartitions(16).allow_dask_on_strings(enable=True).apply(run_cmd, args=(krongen,k_val,outdir,), axis=1)
-            print(to_generate['exit_code']) 
+            #to_generate['exit_code'] = to_generate.swifter.set_dask_scheduler('processes').set_npartitions(16).allow_dask_on_strings(enable=True).apply(run_cmd, args=(krongen,k_val,outdir,), axis=1)
+            to_generate_d.map_partitions(run_cmd_dask).compute(scheduler='threads')  
+            #print(to_generate['exit_code']) 
 
 
 if __name__ == '__main__':
