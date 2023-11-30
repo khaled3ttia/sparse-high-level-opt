@@ -4,7 +4,8 @@ import subprocess
 from pathlib import Path
 import argparse 
 
-def find_l3_cache_size():
+
+def find_l3_cache_size_not_portable():
     ''' finds L3 cache size in MB '''
 
     l3_size = -1
@@ -17,6 +18,19 @@ def find_l3_cache_size():
         print(result.stderr.decode('utf-8'))
     return l3_size 
 
+
+def find_l3_cache_size():
+    ''' finds L3 cache size in MB '''
+
+    l3_size = -1 
+    cmd = "getconf -a | grep LEVEL3_CACHE_SIZE | awk '{print $2}'"
+    result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    try:
+        l3_size = math.ceil(int(result.stdout.decode('utf-8'))/(1024*1024))
+    except:
+        print('Cannot get the L3 cache size because of the following error!')
+        print(result.stderr.decode('utf-8'))
+    return l3_size
 
 def try_config(init_vals, kpower):
 
