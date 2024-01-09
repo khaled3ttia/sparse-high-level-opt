@@ -42,8 +42,6 @@ do
     csr_out=$(echo "$csr_full_out" | tail -n 1)
 
 
-    for i in 
-
     echo "$base_mtx_name,$csr_out" >> $results_file
 
 done
