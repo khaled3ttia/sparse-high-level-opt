@@ -1,0 +1,3 @@
+terminate called after throwing an instance of 'taco::TacoException'
+  what():  Error at /taco/src/storage/storage.cpp:35 in Content:
+ The number of format mode types (2) must match the tensor order (1).
