@@ -13,7 +13,7 @@ def main(args):
     ngroups = args.ngroups
 
     sbatch_config = { 
-                'parition' : 'disc',
+                'partition' : 'disc',
                 'nodes' : 1, 
                 'ntasks' : 128,
                 'mem' : '256G',
