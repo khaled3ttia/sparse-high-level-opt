@@ -3,7 +3,8 @@ import argparse
 
 def run(files):
     for file in files:
-        out = subprocess.run(file, stdout=subprocess.PIPE, stderr=subprocess.PIPE,shell=True)
+        cmd = f'sbatch {file}'
+        out = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd='.', shell=True)
         print(f'sbatch {file} submitted...')
         if out.returncode != 0 :
             print(f"Failed with error {out.stderr.decode('utf-8')}")
