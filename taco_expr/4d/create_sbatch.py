@@ -41,7 +41,7 @@ def main(args):
        
         lines.append('module load Python/3.9.5-GCCcore-10.3.0')
         lines.append('cd /home/khaled/sparse-high-level-opt/taco_expr/4d/')
-        lines.append('python generate.py --indir {current_in_out_dir}')
+        lines.append(f'python generate.py --indir {current_in_out_dir}')
         lines.append('echo "CPU SPEC"')
         lines.append('lscpu')
         
