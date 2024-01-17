@@ -36,14 +36,9 @@ def main(args):
             lines.append(f'#SBATCH --{k}={v}')
        
         lines.append(f"{'#'*30}")
-        print(lines)
 
         current_in_out_dir = f'{args.base}{gid}'
-    
-        lines.append(f'cp {args.script} {current_in_out_dir}')
-        
-        #lines.append('echo "Starting Apptainer Container..."')
-        #lines.append(f'apptainer exec --bind {current_in_out_dir}:/data taco_py_latest.sif /data/run_tool_blocking.sh /data/ /data/taco_block_group{gid}.csv 10')
+       
         lines.append('module load Python/3.9.5-GCCcore-10.3.0')
         lines.append('cd /home/khaled/sparse-high-level-opt/taco_expr/4d/')
         lines.append('python generate.py --indir {current_in_out_dir}')
