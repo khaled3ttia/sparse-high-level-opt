@@ -39,7 +39,6 @@ def main(args):
 
         current_in_out_dir = f'{args.base}{gid}'
        
-        #lines.append('module load Python/3.9.5-GCCcore-10.3.0')
         lines.append(f'cp {args.script} {current_in_out_dir}')
         lines.append(f'echo "Starting Apptainer Container..."')
         lines.append(f'apptainer exec --bind {current_in_out_dir}:/data taco_py_latest.sif /data/run_tool_4d.sh /data/ /data/taco_4d_uuud_group{gid}.csv 10')
@@ -50,7 +49,7 @@ def main(args):
         with open(files[gid-1],'w') as f:
             for line in lines:
                 f.write(f'{line}\n')
-    #run(files)
+    run(files)
 
 
 if __name__ == '__main__':
