@@ -39,10 +39,10 @@ def process_mat(mtx):
             tensor_entries = []
             for i, j, v in zip(mat.row, mat.col, mat.data):
                 io, ii, jo, ji = 0,0,0,0
-                io = i // nb
-                ii = i % nb
-                jo = j // mb
-                ji = j % mb
+                io = (i // nb) + 1
+                ii = (i % nb) + 1
+                jo = (j // mb) + 1
+                ji = (j % mb) + 1
                 tensor_entries.append((io,ii,jo,ji,v))
             tensor_entries.sort()
             gen_tensor_path = f'{directory}/{base_file_name}-r{nb}_c{mb}.tns'
