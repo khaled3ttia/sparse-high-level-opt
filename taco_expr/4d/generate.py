@@ -44,7 +44,7 @@ def process_mat(mtx):
                 jo = (j // mb) + 1
                 ji = (j % mb) + 1
                 #tensor_entries.append((io,ii,jo,ji,v))
-                tensor_entries.append((io, jo, ii, ji))
+                tensor_entries.append((io, jo, ii, ji, v))
             tensor_entries.sort()
             gen_tensor_path = f'{directory}/{base_file_name}-r{nb}_c{mb}.tns'
             with open(gen_tensor_path,'w') as f:
