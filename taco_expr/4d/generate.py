@@ -48,8 +48,10 @@ def process_mat(mtx):
             tensor_entries.sort()
             gen_tensor_path = f'{directory}/{base_file_name}-r{nb}_c{mb}.tns'
             with open(gen_tensor_path,'w') as f:
-                for io, ii, jo, ji, v in tensor_entries:
-                    f.write(f'{io} {ii} {jo} {ji} {v}\n')
+                #for io, ii, jo, ji, v in tensor_entries:
+                for io, jo, ii, ji, v in tensor_entries:
+                    #f.write(f'{io} {ii} {jo} {ji} {v}\n')
+                    f.write(f'{io} {jo} {ii} {ji} {v}\n')
             print(f'4D Tensor file generated at {gen_tensor_path}')
 
 def main(args):
