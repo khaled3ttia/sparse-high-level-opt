@@ -61,7 +61,7 @@ def process_mat(mtx, indir, outdir, start, end, copy_freq):
                     print(f"Error deleting {delete_process.stderr.decode('utf-8')}")
                 if (count_files % copy_freq == 0):
                     # Copy results file from $LSCRATCH to scratch
-                    cp_cmd = f'cp {outdir}/{results_filename} {indir}')
+                    cp_cmd = f'cp {outdir}/{results_filename} {indir}'
                     cp_process = subprocess.run(cp_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
                     if (cp_process.returncode == 0):
                         print(f'Copied results file from $LSCRATCH to /scratch')

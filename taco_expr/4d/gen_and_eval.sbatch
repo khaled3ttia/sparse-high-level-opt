@@ -9,9 +9,9 @@
 #SBATCH --mail-user=khaled.abdelaal@ou.edu
 #SBATCH --mail-type=ALL
 #SBATCH --chdir=/home/khaled
-#SBATCH --output=gen_and_eval_.txt
-#SBATCH --error=eval4d_group1_stderr.txt
-#SBATCH --job-name=eval4d_group1
+#SBATCH --output=gen_and_eval_stdout.txt
+#SBATCH --error=gen_and_eval_stderr.txt
+#SBATCH --job-name=gen_and_eval
 ##############################
 module load Python/3.9.5-GCCcore-10.3.0
 
