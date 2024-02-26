@@ -21,7 +21,7 @@ else
 	num_trials="$3"
 fi
 
-base_cmd="taco \"a(i,j) = B(i,j,k,l) * c(k,l)\" -f=a:dd -f=c:dd -g=c:r -time="${num_trials}" -write-time=/dev/stdout -f=B:duuu -i=B:"
+base_cmd="taco \"a(i,j) = B(i,j,k,l) * c(k,l)\" -f=a:dd -f=c:dd -g=c:r -time="${num_trials}" -write-time=/dev/stdout -f=B:ssss -i=B:"
 echo "$base_cmd"
 #l3_size=`getconf -a | grep LEVEL3_CACHE_SIZE | awk '{print $2}'`
 
