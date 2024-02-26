@@ -23,8 +23,6 @@ fi
 
 base_cmd="taco \"a(i,j) = B(i,j,k,l) * c(k,l)\" -f=a:dd -f=c:dd -g=c:r -time="${num_trials}" -write-time=/dev/stdout -f=B:duuu -i=B:"
 echo "$base_cmd"
-echo "filename,dcsr_compile,dcsr_assemble,dcsr_mean,dcsr_stdev,dcsr_median" > $results_file
-
 #l3_size=`getconf -a | grep LEVEL3_CACHE_SIZE | awk '{print $2}'`
 
 

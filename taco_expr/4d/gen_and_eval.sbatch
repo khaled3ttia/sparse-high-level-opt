@@ -21,6 +21,10 @@ indir=/scratch/khaled/mtx_files
 outdir=$LSCRATCH/tns_4d_out
 mkdir -p $outdir
 
+results_file=$outdir/taco_4d_ssss_iojo_k21.csv
+echo "filename,dcsr_compile,dcsr_assemble,dcsr_mean,dcsr_stdev,dcsr_median" > $results_file
+
+
 # Copy the bash script for evaluation
 cp /home/khaled/sparse-high-level-opt/taco_expr/4d/mod_run_tool_4d.sh $outdir 
 
