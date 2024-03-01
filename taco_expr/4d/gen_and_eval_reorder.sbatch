@@ -9,9 +9,9 @@
 #SBATCH --mail-user=khaled.abdelaal@ou.edu
 #SBATCH --mail-type=ALL
 #SBATCH --chdir=/home/khaled
-#SBATCH --output=gen_and_eval_reorder_stdout.txt
-#SBATCH --error=gen_and_eval_reorder_stderr.txt
-#SBATCH --job-name=gen_and_eval_reorder
+#SBATCH --output=gen_and_eval_reorder_k16_stdout.txt
+#SBATCH --error=gen_and_eval_reorder_k16_stderr.txt
+#SBATCH --job-name=gen_and_eval_reorder_k16
 ##############################
 module load Python/3.9.5-GCCcore-10.3.0
 
@@ -21,7 +21,10 @@ indir=/scratch/khaled/mtx_files
 outdir=$LSCRATCH/tns_4d_out
 mkdir -p $outdir
 
-results_file=$outdir/taco_4d_ssss_iojo_reorder_k21.csv
+# TODO : Change per experiment
+results_filename=taco_4d_ssss_iojo_reorder_k16.csv
+
+results_file=$outdir/$results_filename
 echo "filename,dcsr_compile,dcsr_assemble,dcsr_mean,dcsr_stdev,dcsr_median" > $results_file
 
 
@@ -31,6 +34,6 @@ cp /home/khaled/sparse-high-level-opt/taco_expr/4d/reorder_run_tool_4d.sh $outdi
 # Run the python script 
 cd /home/khaled/sparse-high-level-opt/taco_expr/4d
 
-python gen_and_run_reorder.py --indir $indir --outdir $outdir --start 2 --end 6 --copy_freq 10 
+python gen_and_run_reorder.py --indir $indir --outdir $outdir --start 2 --end 11 --copy_freq 1 --outfile $results_filename 
 
 lscpu

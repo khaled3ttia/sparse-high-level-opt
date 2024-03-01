@@ -8,7 +8,8 @@ import os
 import subprocess 
 from pathlib import Path
 
-results_filename = 'taco_4d_ssss_iojo_reorder_k21.csv'
+# Just an example, this value is not actually used
+results_filename = ''
 def process_mat(mtx, indir, outdir, start, end, copy_freq):
     #base_file_name = mtx.split('.')[0]
     base_file_name = Path(mtx).stem
@@ -85,7 +86,6 @@ def main(args):
     start = args.start
     end = args.end 
     copy_freq = args.copy_freq
-
     # create output directory if it does not exist 
     if not os.path.exists(outdir):
         os.makedirs(outdir)
@@ -111,10 +111,12 @@ if __name__ == '__main__':
     parser.add_argument('--start', type=int, required=True, help='Smallest Tile dimesnion Base 2 Power to evaluate. For example, for dimension of size 1024, you should use 10')
     parser.add_argument('--end', type=int, required=True, help='Biggest Tile dimension Base 2 Power to evaluate. For exmaple, for dimension size of 32, you should use 5')
     parser.add_argument('--copy_freq', type=int, required=True, default=10, help='Copy result file after each n tensor files being evaluatd successfully')
+    parser.add_argument('--outfile', type=str, required=True, help='Name of the output csv file (including .csv) without the path')
 
     args = parser.parse_args()
 
-    
+    global results_filename
+    results_filename = args.outfile
 
     main(args)
 
