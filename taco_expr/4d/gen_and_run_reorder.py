@@ -115,7 +115,6 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    global results_filename
     results_filename = args.outfile
 
     main(args)
