@@ -34,6 +34,6 @@ cp /home/khaled/sparse-high-level-opt/taco_expr/4d/reorder_manual_run_tool_4d.sh
 # Run the python script 
 cd /home/khaled/sparse-high-level-opt/taco_expr/4d
 
-python gen_and_run_reorder.py --indir $indir --outdir $outdir --start 2 --end 11 --copy_freq 1 --outfile $results_filename 
+python gen_and_run_reorder_manual.py --indir $indir --outdir $outdir --start 2 --end 11 --copy_freq 1 --outfile $results_filename 
 
 lscpu
