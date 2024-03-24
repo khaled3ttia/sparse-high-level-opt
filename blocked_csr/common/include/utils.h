@@ -294,7 +294,7 @@ void coo_to_csr_scipy(const int n, const int m, const int nnz, int *&nnzRowIdx,
   }
 }
 
-#std::vector version
+//std::vector version
 template <typename T>
 void coo_to_csr_scipy_v(const int n, const int m, const int nnz,
                         const std::vector<int> &nnzRowIdx,
