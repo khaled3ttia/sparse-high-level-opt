@@ -16,7 +16,6 @@
 #include <string>
 #include <unistd.h>
 
-
 template <typename T> struct triplet {
   int row;
   int col;
@@ -31,10 +30,12 @@ template <typename T> struct triplet {
 int flatIndex(int, int, int, int);
 
 template <typename T>
-void readMTX(const std::string& filename, std::vector<int>& rows, std::vector<int>& cols, std::vector<T>& values, int* numRows, int* numCols, int* nnz, bool verbose){
+void readMTX(const std::string &filename, std::vector<int> &rows,
+             std::vector<int> &cols, std::vector<T> &values, int *numRows,
+             int *numCols, int *nnz, bool verbose) {
 
   if (verbose)
-  std::cout << "Loading file " << filename << "....." << std::endl;
+    std::cout << "Loading file " << filename << "....." << std::endl;
 
   int numValues = 0;
   int currentLine = 0;
@@ -106,15 +107,15 @@ void readMTX(const std::string& filename, std::vector<int>& rows, std::vector<in
   *nnz = currentIndex;
 
   if (verbose) {
-    std::cout << "rows: " << *numRows << ", cols: " << *numCols << ", nnz: " << *nnz
-              << std::endl;
+    std::cout << "rows: " << *numRows << ", cols: " << *numCols
+              << ", nnz: " << *nnz << std::endl;
   }
 
   std::sort(entries.begin(), entries.end());
 
-  //nnzRowIdx = new int[*nnz];
-  //nnzColIdx = new int[*nnz];
-  //nnzVal = new T[*nnz];
+  // nnzRowIdx = new int[*nnz];
+  // nnzColIdx = new int[*nnz];
+  // nnzVal = new T[*nnz];
 
   for (int i = 0; i < entries.size(); i++) {
     rows.emplace_back(entries[i].row);
@@ -123,23 +124,21 @@ void readMTX(const std::string& filename, std::vector<int>& rows, std::vector<in
   }
 
   mtx_file.close();
-
-
 }
-
 
 // This function takes a MTX file as an input and loads it in the Coordinate
 // format
 //  arguments:
 //	*&nnzRowIdx : (in-out) an integer pointer reference to the output COO
-//row indices array
+// row indices array
 //	*&nnzColIdx : (in-out) an integer pointer reference to the output COO
-//col indices array
+// col indices array
 //	*&nnzVal    : (in-out) a float pointer reference to the output COO float
-//values array 	*nnz 	    : (in-out) an integer pointer to the number of
-//non-zeros in the matrix 	*nrows 	    : (in-out) an integer pointer to the
-//number of rows 	*ncols 	    : (in-out) an integer pointer to the number
-//of columns 	filename    : (in)     a string representing filename (file path)
+// values array 	*nnz 	    : (in-out) an integer pointer to the number
+// of non-zeros in the matrix 	*nrows 	    : (in-out) an integer pointer to the
+// number of rows 	*ncols 	    : (in-out) an integer pointer to the number
+// of columns 	filename    : (in)     a string representing filename (file
+// path)
 //   verbose     : (in)     a boolean to enable/disable printing stdout messages
 //
 template <typename T>
@@ -147,7 +146,7 @@ void loadMTX(int *&nnzRowIdx, int *&nnzColIdx, T *&nnzVal, int *nnz, int *nrows,
              int *ncols, std::string filename, bool verbose) {
 
   if (verbose)
-  std::cout << "Loading file " << filename << "....." << std::endl;
+    std::cout << "Loading file " << filename << "....." << std::endl;
 
   int numValues = 0;
   int currentLine = 0;
@@ -238,69 +237,101 @@ void loadMTX(int *&nnzRowIdx, int *&nnzColIdx, T *&nnzVal, int *nnz, int *nrows,
   mtx_file.close();
 }
 
-void coo_to_csr(int *&nnzRowIdx, const int nnz, const int nrows, int *&rowPtr){
-  rowPtr = new int[nrows+1];
+void coo_to_csr(int *&nnzRowIdx, const int nnz, const int nrows, int *&rowPtr) {
+  rowPtr = new int[nrows + 1];
   std::fill(rowPtr, rowPtr + nrows, -1);
   rowPtr[0] = 0;
   rowPtr[nrows] = nnz;
 
-  int x = 0; 
-  for (int i = 0; i < nnz; i++){
-      while (nnzRowIdx[i] != x){
-          rowPtr[++x] = i;
-      }
+  int x = 0;
+  for (int i = 0; i < nnz; i++) {
+    while (nnzRowIdx[i] != x) {
+      rowPtr[++x] = i;
+    }
   }
- 
-  // if used rows < total rows, repeat last value 
-  for (int i = x+1 ; i < nrows; i++){
-      rowPtr[i] = nnz;
+
+  // if used rows < total rows, repeat last value
+  for (int i = x + 1; i < nrows; i++) {
+    rowPtr[i] = nnz;
   }
-  
 }
 // SciPy's implementation of coo to csr conversion
 // left here for reference and comparison
-// original version at: https://github.com/scipy/scipy/blob/3b36a57/scipy/sparse/sparsetools/coo.h#L34
+// original version at:
+// https://github.com/scipy/scipy/blob/3b36a57/scipy/sparse/sparsetools/coo.h#L34
 template <typename T>
-void coo_to_csr_scipy(const int n, const int m, const int nnz, int *&nnzRowIdx, int *&nnzColIdx, T *&nnzVal, int *&Bp, int *&Bj, T *&Bx){
-    Bp = new int[n+1];
-    Bj = new int[nnz];
-    Bx = new T[nnz];
+void coo_to_csr_scipy(const int n, const int m, const int nnz, int *&nnzRowIdx,
+                      int *&nnzColIdx, T *&nnzVal, int *&Bp, int *&Bj, T *&Bx) {
+  Bp = new int[n + 1];
+  Bj = new int[nnz];
+  Bx = new T[nnz];
 
-    std::fill(Bp, Bp+n, 0);
-    for (int i = 0; i < nnz; i++){
-        Bp[nnzRowIdx[i]]++;
-    }
-    for (int i =0, cumsum=0; i<n; i++){
-        int temp = Bp[i];
-        Bp[i] = cumsum;
-        cumsum += temp;
-    }
-    Bp[n] = nnz;
+  std::fill(Bp, Bp + n, 0);
+  for (int i = 0; i < nnz; i++) {
+    Bp[nnzRowIdx[i]]++;
+  }
+  for (int i = 0, cumsum = 0; i < n; i++) {
+    int temp = Bp[i];
+    Bp[i] = cumsum;
+    cumsum += temp;
+  }
+  Bp[n] = nnz;
 
-    for (int i =0; i < nnz; i++){
-        int row = nnzRowIdx[i];
-        int dest = Bp[row];
+  for (int i = 0; i < nnz; i++) {
+    int row = nnzRowIdx[i];
+    int dest = Bp[row];
 
-        Bj[dest] = nnzColIdx[i];
-        Bx[dest] = nnzVal[i];
+    Bj[dest] = nnzColIdx[i];
+    Bx[dest] = nnzVal[i];
 
-        Bp[row]++;
-    }
+    Bp[row]++;
+  }
 
-    for (int i =0, last=0; i <= n; i++){
-        int temp = Bp[i];
-        Bp[i] = last;
-        last = temp;
-    }
+  for (int i = 0, last = 0; i <= n; i++) {
+    int temp = Bp[i];
+    Bp[i] = last;
+    last = temp;
+  }
 }
 
-
+#std::vector version
 template <typename T>
-void coo_to_csc(const int n, const int m, const int nnz, int *&nnzRowIdx, int *&nnzColIdx, T *&nnzVal, int *&Bp, int *&Bi, T *&Bx){
-    coo_to_csr_scipy<T>(m, n, nnz, nnzColIdx, nnzRowIdx, nnzVal, Bp, Bi, Bx);
+void coo_to_csr_scipy_v(const int n, const int m, const int nnz,
+                        const std::vector<int> &nnzRowIdx,
+                        const std::vector<int> &nnzColIdx,
+                        const std::vector<T> &nnzVal, std::vector<int> &Bp,
+                        std::vector<int> &Bj, std::vector<T> &Bx) {
+  Bp.resize(n + 1, 0);
+  Bj.resize(nnz);
+  Bx.resize(nnz);
+
+  for (int i = 0; i < nnz; i++) {
+    Bp[nnzRowIdx[i]]++;
+  }
+  for (int i = 0, cumsum = 0; i < n; i++) {
+    int temp = Bp[i];
+    Bp[i] = cumsum;
+    cumsum += temp;
+  }
+  Bp[n] = nnz;
+
+  std::vector<int> rowStarts = Bp;
+  for (int i = 0; i < nnz; i++) {
+    int row = nnzRowIdx[i];
+    int dest = rowStarts[row];
+
+    Bj[dest] = nnzColIdx[i];
+    Bx[dest] = nnzVal[i];
+
+    rowStarts[row]++;
+  }
 }
 
-
+template <typename T>
+void coo_to_csc(const int n, const int m, const int nnz, int *&nnzRowIdx,
+                int *&nnzColIdx, T *&nnzVal, int *&Bp, int *&Bi, T *&Bx) {
+  coo_to_csr_scipy<T>(m, n, nnz, nnzColIdx, nnzRowIdx, nnzVal, Bp, Bi, Bx);
+}
 
 template <typename T> void print(T *x, const int size, std::string name = " ") {
   if (name != " ") {
@@ -320,14 +351,13 @@ template <typename T> void fill(T *x, const int n, const float maxi) {
   }
 }
 
-template <typename T>
-void fillRandom(std::vector<T>& vec, T minVal, T maxVal){
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<T> dis(minVal, maxVal);
-    for (T& val : vec){
-        val = dis(gen);
-    }
+template <typename T> void fillRandom(std::vector<T> &vec, T minVal, T maxVal) {
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  std::uniform_real_distribution<T> dis(minVal, maxVal);
+  for (T &val : vec) {
+    val = dis(gen);
+  }
 }
 
 template <typename T>
@@ -343,19 +373,20 @@ void spmv_ref_coo(int *&nnzRowIdx, int *&nnzColIdx, T *&nnzVal, int *nnz,
   }
 }
 
-
 template <typename T>
-void spmv_ref_csr(int *&rowPtr, int *&nnzColIdx, T *&nnzVal, const int nnz, const int nrows, T *&x, T alpha, T beta, T *&ref){
-    ref = new T[nrows];
-    std::fill(ref, ref+(nrows),0);
-    for (int i = 0; i < nrows; i++) {
-        int firstValIdx = rowPtr[i];
-        int lastValIdx = rowPtr[i+1];
-        while (firstValIdx < lastValIdx){
-            ref[i] += alpha * nnzVal[firstValIdx] * x[nnzColIdx[firstValIdx]] + beta * ref[i];
-            firstValIdx++;
-        }
+void spmv_ref_csr(int *&rowPtr, int *&nnzColIdx, T *&nnzVal, const int nnz,
+                  const int nrows, T *&x, T alpha, T beta, T *&ref) {
+  ref = new T[nrows];
+  std::fill(ref, ref + (nrows), 0);
+  for (int i = 0; i < nrows; i++) {
+    int firstValIdx = rowPtr[i];
+    int lastValIdx = rowPtr[i + 1];
+    while (firstValIdx < lastValIdx) {
+      ref[i] += alpha * nnzVal[firstValIdx] * x[nnzColIdx[firstValIdx]] +
+                beta * ref[i];
+      firstValIdx++;
     }
+  }
 }
 void cooToDense(int *&nnzRowIdx, int *&nnzColIdx, float *&nnzVal, int nnz,
                 int nrows, int ncols, float *&denseMatrix) {
