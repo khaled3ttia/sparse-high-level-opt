@@ -388,6 +388,19 @@ void spmv_ref_csr(int *&rowPtr, int *&nnzColIdx, T *&nnzVal, const int nnz,
     }
   }
 }
+
+template <typename T>
+void spmv_ref_csr_v(const std::vector<int>& rowPtr, const std::vector<int>& nnzColIdx, const std::vector<T>& nnzVal, const int nnz, const int nrows, const std::vector<T>& x, T alpha, T beta, std::vector<T>& ref){
+    ref.resize(nrows, 0);
+    for (int i = 0; i < nrows; ++i){
+        int firstValIdx = rowPtr[i];
+        int lastValIdx = rowPtr[i+1];
+        for (int j = firstValIdx; j < lastValIdx; ++j){
+            ref[i] += alpha * nnzVal[j] * x[nnzColIdx[j]] + beta * ref[i];
+        }
+    }
+}
+
 void cooToDense(int *&nnzRowIdx, int *&nnzColIdx, float *&nnzVal, int nnz,
                 int nrows, int ncols, float *&denseMatrix) {
 
