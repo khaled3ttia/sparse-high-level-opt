@@ -321,6 +321,16 @@ template <typename T> void fill(T *x, const int n, const float maxi) {
 }
 
 template <typename T>
+void fillRandom(std::vector<T>& vec, T minVal, T maxVal){
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<T> dis(minVal, maxVal);
+    for (T& val : vec){
+        val = dis(gen);
+    }
+}
+
+template <typename T>
 void spmv_ref_coo(int *&nnzRowIdx, int *&nnzColIdx, T *&nnzVal, int *nnz,
                   int *nrows, T *&x, T alpha, T beta, T *&ref) {
   ref = new T[*nrows];
