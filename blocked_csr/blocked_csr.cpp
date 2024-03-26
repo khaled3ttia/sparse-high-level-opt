@@ -13,13 +13,13 @@ struct CSRMatrix {
   CSRMatrix(int numRows) : rowPtrs(numRows + 1, 0) {}
 };
 
-std::vector<CSRMatrix> tileAndConvertToCSR(const std::vector<int> &rows,
+std::map<std::pair<int, int>, CSRMatrix> tileAndConvertToCSR(const std::vector<int> &rows,
                                            const std::vector<int> &cols,
                                            const std::vector<float> &values,
                                            int numRows, int numCols,
                                            int rowsPerBlock, int colsPerBlock) {
 
-  std::vector<CSRMatrix> csrBlocks;
+  //std::vector<CSRMatrix> csrBlocks;
 
   std::map<std::pair<int, int>, CSRMatrix> tiles;
 
@@ -50,11 +50,13 @@ std::vector<CSRMatrix> tileAndConvertToCSR(const std::vector<int> &rows,
     for (int i = 1; i <= rowsPerBlock; ++i) {
       tile.rowPtrs[i] += tile.rowPtrs[i - 1];
     }
-    csrBlocks.push_back(tile);
+    //csrBlocks.push_back(tile);
   }
-  return csrBlocks;
+  return tiles;
+  //return csrBlocks;
 }
 
+/*
 std::vector<float> SpMV(const CSRMatrix &tile,
                         const std::vector<float> &denseVec, int colOffset) {
 
@@ -69,37 +71,67 @@ std::vector<float> SpMV(const CSRMatrix &tile,
 
   return result;
 }
+*/
 
-void SpMVTiled(const std::vector<CSRMatrix> &csrBlocks,
+void SpMV(const CSRMatrix &tile,
+                        const float* denseVec, float* result) {
+
+  //std::vector<float> result(tile.rowPtrs.size() - 1, 0.0f);
+  for (int i = 0; i < tile.rowPtrs.size() - 1; ++i) {
+    float y = 0.0f;
+    for (int j = tile.rowPtrs[i]; j < tile.rowPtrs[i + 1]; ++j) {
+      y += tile.values[j] * denseVec[tile.colIndices[j]];
+    }
+    result[i] += y;
+  }
+
+}
+
+
+void SpMVTiled(const std::map<std::pair<int,int>, CSRMatrix> &tiles,
                const std::vector<float> &denseVec, std::vector<float> &result,
                int numRows, int numCols, int rowsPerBlock, int colsPerBlock) {
 
   std::fill(result.begin(), result.end(), 0.0f);
   int tilesPerRow = (numCols + colsPerBlock - 1) / colsPerBlock;
 
-  for (size_t blockIdx = 0; blockIdx < csrBlocks.size(); ++blockIdx) {
-    int blockRow = blockIdx / tilesPerRow;
-    int blockCol = blockIdx % tilesPerRow;
+  for (auto &pair : tiles) {
+       
+        const CSRMatrix& tile = pair.second;
+        int blockIdx = pair.first.first * tilesPerRow + pair.first.second;
+         
+        int blockRow = blockIdx / tilesPerRow;
+        int blockCol = blockIdx % tilesPerRow;
 
-    int colOffset = blockCol * colsPerBlock;
-    // This will be eventually replaced with MKL/ cuSparse call
-    std::vector<float> tileResult =
-        SpMV(csrBlocks[blockIdx], denseVec, colOffset);
+        int colOffset = blockCol * colsPerBlock;
+        // This will be eventually replaced with MKL/ cuSparse call
+        int rowOffset = blockRow * rowsPerBlock; 
 
-    for (size_t i = 0; i < tileResult.size(); ++i) {
+        float* subResult = &result[rowOffset];
+        const float* subOperand = &denseVec[colOffset];
+        SpMV(tile, subOperand, subResult);
+        /*
+        std::vector<float> tileResult =
+            SpMV(csrBlocks[blockIdx], denseVec, colOffset);
 
-      int rowIdx = blockRow * rowsPerBlock + i;
-      result[rowIdx] += tileResult[i];
-    }
-  }
+        for (size_t i = 0; i < tileResult.size(); ++i) {
+
+          int rowIdx = blockRow * rowsPerBlock + i;
+          result[rowIdx] += tileResult[i];
+        }
+        */
+      }
+      
 }
 
 int main() {
 
   // std::string filename = "bcsstk22.mtx";
   // std::string filename = "small_sparse_matrix.mtx";
-  std::string filename = "small_sparse_matrix_8x8.mtx";
+  //std::string filename = "small_sparse_matrix_8x8.mtx";
+  std::string filename = "small_sparse_matrix_8x8_empty_block.mtx";
   std::vector<int> rows, cols;
+
   std::vector<float> values;
   // readMTX(rows, cols, values);
 
@@ -116,7 +148,7 @@ int main() {
   // first try one tile
   int rowsPerBlock = numRows;
   int colsPerBlock = numCols;
-  std::vector<CSRMatrix> csrBlocks = tileAndConvertToCSR(
+  std::map<std::pair<int,int>, CSRMatrix> csrBlocks = tileAndConvertToCSR(
       rows, cols, values, numRows, numCols, rowsPerBlock, colsPerBlock);
 
   // TODO: populate denseVec
@@ -148,9 +180,10 @@ int main() {
 
   std::cout << "Total errors : " << count_errors << std::endl;
 
-  /*
+
   int tileIdx = 0;
-  for (CSRMatrix& tile: csrBlocks){
+  for (auto &pair: csrBlocks){
+      CSRMatrix &tile = pair.second;
       std::cout << "Tile " << tileIdx << std::endl;
       std::cout << "Values: " << std::endl;
       for (auto& val: tile.values){
@@ -172,5 +205,5 @@ int main() {
       tileIdx++;
       std::cout << "=================================" <<std::endl;
   }
-  */
+  
 }
