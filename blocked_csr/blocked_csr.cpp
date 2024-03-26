@@ -100,8 +100,10 @@ void SpMVTiled(const std::map<std::pair<int,int>, CSRMatrix> &tiles,
         const CSRMatrix& tile = pair.second;
         int blockIdx = pair.first.first * tilesPerRow + pair.first.second;
          
-        int blockRow = blockIdx / tilesPerRow;
-        int blockCol = blockIdx % tilesPerRow;
+        //int blockRow = blockIdx / tilesPerRow;
+        //int blockCol = blockIdx % tilesPerRow;
+        int blockRow = pair.first.first;
+        int blockCol = pair.first.second;
 
         int colOffset = blockCol * colsPerBlock;
         // This will be eventually replaced with MKL/ cuSparse call
