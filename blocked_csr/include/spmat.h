@@ -34,7 +34,10 @@ public:
     void tile(const int rowsPerBlock, const int colsPerBlock);
     void multiply(const std::vector<T>& denseVec, std::vector<T>& result);
 
-
+    void printTiles() const;
+    std::vector<T> values() const { return coo_values_; }
+    std::vector<I> rows() const { return coo_rows_; }
+    std::vector<I> cols() const { return coo_cols_; }
     int nrows() const {return numRows_;}
     int ncols() const {return numCols_;}
     int nnz() const {return numNZ_;}
@@ -42,7 +45,7 @@ public:
 private:
     std::vector<I> coo_rows_;
     std::vector<I> coo_cols_;
-    std::vector<I> coo_values_;
+    std::vector<T> coo_values_;
     std::map<std::pair<int, int>, CSRMatrix<T,I>> csrBlocks_;
     int numRows_;
     int numCols_;

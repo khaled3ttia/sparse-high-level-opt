@@ -110,4 +110,32 @@ template <typename T, typename I> void SpMat<T,I>::SpMV_(const CSRMatrix<T,I> &t
 
 }
 
+template <typename T, typename I> void SpMat<T,I>::printTiles() const {
 
+
+    for (auto& pair : csrBlocks_){
+        int blockRowIdx = pair.first.first;
+        int blockColIdx = pair.first.second;
+        CSRMatrix<T,I> tile = pair.second;
+
+        std::cout << "Tile (" << blockRowIdx << "," << blockColIdx << ")" << std::endl;
+        std::cout << "RowPtrs: "; 
+        for (auto& rowPtr : tile.rowPtrs) {
+            std::cout << rowPtr << " ";
+        }
+        std::cout << std::endl;
+        
+        std::cout << "ColIdx: ";
+        for (auto& colIdx: tile.colIndices){
+            std::cout << colIdx << " ";
+        }
+        std::cout << std::endl;
+
+        std::cout << "Values: ";
+        for (auto& val: tile.values){
+            std::cout << val << " ";
+        }
+        std::cout << std::endl;
+        std::cout << "==========================" << std::endl;
+    }
+}
