@@ -123,7 +123,9 @@ template <typename T, typename I> void SpMat<T,I>::SpMV_(CSRMatrix<T,I> &tile, c
     T* values = tile.values.data();
 
 
-    mkl_sparse_s_create_csr(&csrA, SPARSE_INDEX_BASE_ZERO, numRows_, numCols_, rowPtrs, rowPtrs+1, colIndices, values);
+    
+
+    mkl_sparse_s_create_csr(&csrA, SPARSE_INDEX_BASE_ZERO, rowsPerBlock_, colsPerBlock_, rowPtrs, rowPtrs+1, colIndices, values);
 
     matrix_descr descrA; 
     descrA.type = SPARSE_MATRIX_TYPE_GENERAL;
