@@ -118,9 +118,9 @@ template <typename T, typename I> void SpMat<T,I>::SpMV_(CSRMatrix<T,I> &tile, c
     //auto constexpr single_prec =  (std::is_same_v<T, float>);
     //auto constexpr double_prec = (std::is_same_v<T, double>);
 
-    I* rowPtrs = &(tile.rowPtrs[0]);
-    I* colIndices = &(tile.colIndices[0]);
-    T* values = &(tile.values[0]);
+    I* rowPtrs = tile.rowPtrs.data();
+    I* colIndices = tile.colIndices.data();
+    T* values = tile.values.data();
 
 
     mkl_sparse_s_create_csr(&csrA, SPARSE_INDEX_BASE_ZERO, numRows_, numCols_, rowPtrs, rowPtrs+1, colIndices, values);
