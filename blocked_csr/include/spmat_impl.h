@@ -111,8 +111,7 @@ template <typename T, typename I> void SpMat<T,I>::SpMV_ref_(const CSRMatrix<T,I
 
 }
 
-
-template <typename T, typename I> void SpMat<T,I>::SpMV_(const CSRMatrix<T,I> &tile, const T* denseVec, T* result){
+template <typename T, typename I> void SpMat<T,I>::SpMV_(CSRMatrix<T,I> &tile, const T* denseVec, T* result){
 
     sparse_matrix_t csrA;
      
