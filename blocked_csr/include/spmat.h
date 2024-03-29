@@ -5,7 +5,7 @@
 #include <string>
 #include <map>
 #include "utils.h"
-
+#include <type_traits>
 #include "mkl_spblas.h"
 #include "mkl_types.h"
 
