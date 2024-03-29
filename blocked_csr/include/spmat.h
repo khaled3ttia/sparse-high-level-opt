@@ -6,6 +6,10 @@
 #include <map>
 #include "utils.h"
 
+#include "mkl_spblas.h"
+#include "mkl_types.h"
+
+
 template <typename T, typename I>
 struct CSRMatrix {
     std::vector<T> values;
@@ -56,6 +60,7 @@ private:
     void tileAndConvertToCSR_();
     virtual void SpMVTiled_(const std::vector<T>& denseVec, std::vector<T>& result);
     virtual void SpMV_(const CSRMatrix<T,I>& tile, const T* denseVec, T* result);
+    void SpMV_ref_(const CSRMatrix<T,I>& tile, const T* denseVec, T* result);
 };
 
 #include "spmat_impl.h"

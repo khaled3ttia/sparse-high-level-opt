@@ -97,9 +97,10 @@ template <typename T, typename I> void SpMat<T,I>::SpMVTiled_(const std::vector<
 
 }
 
-template <typename T, typename I> void SpMat<T,I>::SpMV_(const CSRMatrix<T,I> &tile, const T* denseVec, T* result){
 
-  //result.assign(tile.rowPtrs.size() - 1, T{0});
+template <typename T, typename I> void SpMat<T,I>::SpMV_ref_(const CSRMatrix<T,I> &tile, const T* denseVec, T* result){
+
+    //result.assign(tile.rowPtrs.size() - 1, T{0});
   for (int i = 0; i < tile.rowPtrs.size() - 1; ++i) {
     float y = T{0};
     for (int j = tile.rowPtrs[i]; j < tile.rowPtrs[i + 1]; ++j) {
@@ -109,6 +110,33 @@ template <typename T, typename I> void SpMat<T,I>::SpMV_(const CSRMatrix<T,I> &t
   }
 
 }
+
+
+template <typename T, typename I> void SpMat<T,I>::SpMV_(const CSRMatrix<T,I> &tile, const T* denseVec, T* result){
+
+    sparse_matrix_t csrA;
+     
+    auto constexpr single_prec =  (std::is_same_v<T, float>);
+    auto constexpr double_prec = (std::is_same_v<T, double>);
+
+    if (double_precision){
+        mkl_sparse_d_create_csr(&csrA, SPARSE_INDEX_BASE_ZERO, numRows_, numCols_, tile.rowPtrs, tile.rowPtrs+1, tile.colIndices, tile.values);
+    }else if (single_precision){
+        mkl_sparse_s_create_csr(&csrA, SPARSE_INDEX_BASE_ZERO, numRows_, numCols_, tile.rowPtrs, tile.rowPtrs+1, tile.colIndices, tile.values);
+    }
+
+    matrix_descr descrA; 
+    descrA.type = SPARSE_MATRIX_TYPE_GENERAL;
+    mkl_sparse_optimize(csrA);
+
+    if (double_precision){
+
+        mkl_sparse_d_mv(SPARSE_OPERATION_NON_TRANSPOSE, T{1.0}, csrA, descrA, denseVec, T{0.0}, result);
+    }else if (single_precision){
+        mkl_sparse_s_mv(SPARSE_OPERATION_NON_TRANSPOSE, T{1.0}, csrA, descrA, denseVec, T{0.0}, result);
+    }
+}
+
 
 template <typename T, typename I> void SpMat<T,I>::printTiles() const {
 
