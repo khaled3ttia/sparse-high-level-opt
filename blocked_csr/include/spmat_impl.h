@@ -83,7 +83,7 @@ template <typename T, typename I> void SpMat<T,I>::SpMVTiled_(const std::vector<
     int blockRow = pair.first.first;
     int blockCol = pair.first.second; 
 
-    const CSRMatrix<T,I>& tile = pair.second;
+    CSRMatrix<T,I>& tile = pair.second;
 
     int rowOffset = blockRow * rowsPerBlock_;
     int colOffset = blockCol * colsPerBlock_;
@@ -116,28 +116,21 @@ template <typename T, typename I> void SpMat<T,I>::SpMV_(const CSRMatrix<T,I> &t
 
     sparse_matrix_t csrA;
      
-    auto constexpr single_prec =  (std::is_same_v<T, float>);
-    auto constexpr double_prec = (std::is_same_v<T, double>);
+    //auto constexpr single_prec =  (std::is_same_v<T, float>);
+    //auto constexpr double_prec = (std::is_same_v<T, double>);
 
-    const I* rowPtrs = &(tile.rowPtrs[0]);
-    const I* colIndices = &(tile.colIndices[0]);
-    const T* values = &(tile.values[0]);
+    I* rowPtrs = &(tile.rowPtrs[0]);
+    I* colIndices = &(tile.colIndices[0]);
+    T* values = &(tile.values[0]);
 
-    if (double_prec){
-        mkl_sparse_d_create_csr(&csrA, SPARSE_INDEX_BASE_ZERO, numRows_, numCols_, rowPtrs, rowPtrs+1, colIndices, values);
-    }else if (single_prec){
-        mkl_sparse_s_create_csr(&csrA, SPARSE_INDEX_BASE_ZERO, numRows_, numCols_, rowPtrs, rowPtrs+1, colIndices, values);
-    }
+
+    mkl_sparse_s_create_csr(&csrA, SPARSE_INDEX_BASE_ZERO, numRows_, numCols_, rowPtrs, rowPtrs+1, colIndices, values);
 
     matrix_descr descrA; 
     descrA.type = SPARSE_MATRIX_TYPE_GENERAL;
     mkl_sparse_optimize(csrA);
 
-    if (double_prec){
-        mkl_sparse_d_mv(SPARSE_OPERATION_NON_TRANSPOSE, T{1.0}, csrA, descrA, denseVec, T{0.0}, result);
-    }else if (single_prec){
-        mkl_sparse_s_mv(SPARSE_OPERATION_NON_TRANSPOSE, T{1.0}, csrA, descrA, denseVec, T{0.0}, result);
-    }
+    mkl_sparse_s_mv(SPARSE_OPERATION_NON_TRANSPOSE, T{1.0}, csrA, descrA, denseVec, T{0.0}, result);
 }
 
 
