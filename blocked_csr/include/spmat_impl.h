@@ -125,13 +125,15 @@ template <typename T, typename I> void SpMat<T,I>::SpMV_(CSRMatrix<T,I> &tile, c
 
     
 
-    mkl_sparse_s_create_csr(&csrA, SPARSE_INDEX_BASE_ZERO, rowsPerBlock_, colsPerBlock_, rowPtrs, rowPtrs+1, colIndices, values);
+    mkl_sparse_s_create_csr(&csrA, SPARSE_INDEX_BASE_ZERO, rowsPerBlock_, colsPerBlock_, rowPtrs, rowPtrs + 1, colIndices, values);
 
     matrix_descr descrA; 
     descrA.type = SPARSE_MATRIX_TYPE_GENERAL;
     mkl_sparse_optimize(csrA);
 
     mkl_sparse_s_mv(SPARSE_OPERATION_NON_TRANSPOSE, T{1.0}, csrA, descrA, denseVec, T{0.0}, result);
+
+    mkl_sparse_destroy(csrA);
 }
 
 
