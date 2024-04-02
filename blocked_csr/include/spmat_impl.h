@@ -94,8 +94,8 @@ template <typename T, typename I> void SpMat<T,I>::SpMVTiled_(const std::vector<
     //const T* subOperand = denseVec.data();
     T* subResult = &result[rowOffset];
     // This will be eventually replaced with MKL/ cuSparse call
-    //SpMV_(tile, subOperand, subResult);
-    SpMV_ref_(tile, subOperand, subResult);
+    SpMV_(tile, subOperand, subResult);
+    //SpMV_ref_(tile, subOperand, subResult);
 
   }
 
@@ -132,7 +132,7 @@ template <typename T, typename I> void SpMat<T,I>::SpMV_(CSRMatrix<T,I> &tile, c
     descrA.type = SPARSE_MATRIX_TYPE_GENERAL;
     mkl_sparse_optimize(csrA);
 
-    mkl_sparse_s_mv(SPARSE_OPERATION_NON_TRANSPOSE, T{1.0}, csrA, descrA, denseVec, T{0.0}, result);
+    mkl_sparse_s_mv(SPARSE_OPERATION_NON_TRANSPOSE, T{1.0}, csrA, descrA, denseVec, T{1.0}, result);
 
     mkl_sparse_destroy(csrA);
 }
