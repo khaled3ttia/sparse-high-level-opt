@@ -32,6 +32,8 @@ template <typename T, typename I> void SpMat<T,I>::tile(int rowsPerBlock, int co
 }
 
 template <typename T, typename I> void SpMat<T,I>::tileAndConvertToCSR_(){
+   
+   csrBlocks_.clear();
 
   // Cannot be parallelized
   for (size_t i = 0; i < coo_rows_.size(); ++i) {
@@ -89,9 +91,11 @@ template <typename T, typename I> void SpMat<T,I>::SpMVTiled_(const std::vector<
     int colOffset = blockCol * colsPerBlock_;
 
     const T* subOperand = &denseVec[colOffset];
+    //const T* subOperand = denseVec.data();
     T* subResult = &result[rowOffset];
     // This will be eventually replaced with MKL/ cuSparse call
-    SpMV_(tile, subOperand, subResult);
+    //SpMV_(tile, subOperand, subResult);
+    SpMV_ref_(tile, subOperand, subResult);
 
   }
 
@@ -111,21 +115,18 @@ template <typename T, typename I> void SpMat<T,I>::SpMV_ref_(const CSRMatrix<T,I
 
 }
 
+
 template <typename T, typename I> void SpMat<T,I>::SpMV_(CSRMatrix<T,I> &tile, const T* denseVec, T* result){
 
     sparse_matrix_t csrA;
-     
-    //auto constexpr single_prec =  (std::is_same_v<T, float>);
-    //auto constexpr double_prec = (std::is_same_v<T, double>);
 
     I* rowPtrs = tile.rowPtrs.data();
     I* colIndices = tile.colIndices.data();
     T* values = tile.values.data();
 
 
-    
-
-    mkl_sparse_s_create_csr(&csrA, SPARSE_INDEX_BASE_ZERO, rowsPerBlock_, colsPerBlock_, rowPtrs, rowPtrs + 1, colIndices, values);
+    mkl_sparse_s_create_csr(&csrA, SPARSE_INDEX_BASE_ZERO, this->rowsPerBlock_, this->colsPerBlock_, rowPtrs, rowPtrs + 1, colIndices, values);
+   
 
     matrix_descr descrA; 
     descrA.type = SPARSE_MATRIX_TYPE_GENERAL;
