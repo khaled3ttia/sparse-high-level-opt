@@ -5,5 +5,10 @@ MKL_FLAGS = -m64 -L${MKLROOT}/lib/intel64 -lmkl_intel_lp64 -lmkl_sequential -lmk
 #MKL_FLAGS = -lmkl_rt
 all: default
 
-default:
-	$(CXX) -std=c++17 -g  test_oo.cpp -I $(INCLUDE_DIR) -I $(INCLUDE_DIR2) $(MKL_FLAGS) -o test_oo.x
+default: test_correct test_timing
+
+test_correct:
+	$(CXX) -std=c++17 -g  test_correctness.cpp -I $(INCLUDE_DIR) -I $(INCLUDE_DIR2) $(MKL_FLAGS) -o test_oo.x
+
+test_timing:
+	$(CXX) -std=c++17 -g test_timing.cpp -I $(INCLUDE_DIR) -I $(INCLUDE_DIR2) $(MKL_FLAGS) -o test_time.x
