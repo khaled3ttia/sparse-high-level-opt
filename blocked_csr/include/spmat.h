@@ -8,7 +8,7 @@
 #include <type_traits>
 #include "mkl_spblas.h"
 #include "mkl_types.h"
-
+#include "timer.h"
 
 template <typename T, typename I>
 struct CSRMatrix {
@@ -45,8 +45,15 @@ public:
     int nrows() const {return numRows_;}
     int ncols() const {return numCols_;}
     int nnz() const {return numNZ_;}
+    void setComputeTimes(uint32_t computeTimes) { computeTimes_ = computeTimes; }
+    uint32_t getComputeTimes() { return computeTimes_; } 
+    TimeResults getComputeTimeResults() { return compute_; }
+
 
 private:
+    TimeResults compute_;
+    uint32_t computeTimes_ = 10;
+    TimeResults preprocess_;
     std::vector<I> coo_rows_;
     std::vector<I> coo_cols_;
     std::vector<T> coo_values_;

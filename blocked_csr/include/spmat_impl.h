@@ -68,8 +68,8 @@ template <typename T, typename I> void SpMat<T,I>::tileAndConvertToCSR_(){
 }
 
 template <typename T, typename I> void SpMat<T,I>::multiply(const std::vector<T>& denseVec, std::vector<T>& result){
-
-    if (tiled_) SpMVTiled_(denseVec, result);
+    compute_ = TimeResults{};
+    if (tiled_) BENCHMARK( SpMVTiled_(denseVec, result), computeTimes_, compute_);
 }
 
 
@@ -139,7 +139,6 @@ template <typename T, typename I> void SpMat<T,I>::SpMV_(CSRMatrix<T,I> &tile, c
 
 
 template <typename T, typename I> void SpMat<T,I>::printTiles() const {
-
 
     for (auto& pair : csrBlocks_){
         int blockRowIdx = pair.first.first;

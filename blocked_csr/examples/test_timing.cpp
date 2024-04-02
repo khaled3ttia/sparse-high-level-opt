@@ -94,6 +94,7 @@ int main() {
 
   uint32_t experiments_per_config = 10;
 
+  myMat.setComputeTimes(experiments_per_config);
   int nrows = myMat.nrows();
   int ncols = myMat.ncols();
   int nnz = myMat.nnz();
@@ -128,7 +129,6 @@ int main() {
 
       std::vector<float> result(myMat.nrows());
 
-      myMat.setComputeTimes(experiments_per_config);
       myMat.multiply(denseVec, result);
 
       perf[tileConfig] = myMat.getComputeTimeResults();
