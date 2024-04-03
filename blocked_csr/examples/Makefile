@@ -15,4 +15,4 @@ test_timing:
 
 
 benchmark:
-	$(CXX) -std=c++17 -g benchmark.cpp -I $(INCLUDE_DIR) -I $(INCLUDE_DIR2) $(MKL_FLAGS) -o benchmark.x
+	$(CXX) -O3 -std=c++17 -g benchmark.cpp -I $(INCLUDE_DIR) -I $(INCLUDE_DIR2) $(MKL_FLAGS) -o benchmark.x
