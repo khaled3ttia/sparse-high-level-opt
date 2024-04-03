@@ -96,9 +96,15 @@ void usage() {
   std::cout << "-n <num_of_experiments> : number of SpMV experiments per "
                "configuration"
             << std::endl;
-  std::cout << "-r <max_rows_per_tile> : maximum number of rows per tile"
+  std::cout << "-w <min_rows_per_tile> : minmum number of rows per tile (default = 1)"
             << std::endl;
-  std::cout << "-c <max_cols_per_tile> : maximum number of columns per tile"
+ 
+  std::cout << "-r <max_rows_per_tile> : maximum number of rows per tile (default = number of rows)"
+            << std::endl;
+  std::cout << "-u <min_cols_per_tile> : minimum number of columns per tile (default = 1)"
+            << std::endl;
+ 
+  std::cout << "-c <max_cols_per_tile> : maximum number of columns per tile (default = number of columns)"
             << std::endl;
   std::cout << "-h : prints usage information" << std::endl;
   exit(0);
@@ -108,6 +114,8 @@ int main(int argc, char **argv) {
 
   int max_row = 0;
   int max_col = 0;
+  int min_row = 0;
+  int min_col = 0; 
   int opt;
   std::string filepath = "../small_sparse_matrix_8x8_empty_block.mtx";
   std::string outdir = "./results";
@@ -138,12 +146,29 @@ int main(int argc, char **argv) {
         usage();
       }
       break;
+    case 'w':
+      try {
+          min_row = atoi(optarg);
+          
+      } catch (...) {
+          std::cout << "Invalid minimum number of rows per tile" << std::endl;
+          usage();
+      }
+      break;
     case 'c':
       try {
         max_col = atoi(optarg);
       } catch (...) {
         std::cout << "Invalid maximum number of columns per tile" << std::endl;
         usage();
+      }
+      break;
+    case 'u':
+      try{
+          min_col = atoi(optarg);
+      } catch (...) {
+          std::cout << "Invalid minimum number of columns per tile" << std::endl;
+          usage();
       }
       break;
     case 'h':
@@ -205,8 +230,11 @@ int main(int argc, char **argv) {
     max_col = ncols;
   }
 
-  for (int rowsPerBlock = 1; rowsPerBlock <= max_row; rowsPerBlock *= 2) {
-    for (int colsPerBlock = 1; colsPerBlock <= max_col; colsPerBlock *= 2) {
+  min_col = std::max(min_col, 1);
+  min_row = std::max(min_row, 1);
+
+  for (int rowsPerBlock = min_row; rowsPerBlock <= max_row; rowsPerBlock *= 2) {
+    for (int colsPerBlock = min_col; colsPerBlock <= max_col; colsPerBlock *= 2) {
       std::pair<int, int> tileConfig =
           std::make_pair(rowsPerBlock, colsPerBlock);
 
