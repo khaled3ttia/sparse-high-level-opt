@@ -48,7 +48,7 @@ public:
     void setComputeTimes(uint32_t computeTimes) { computeTimes_ = computeTimes; }
     uint32_t getComputeTimes() { return computeTimes_; } 
     TimeResults getComputeTimeResults() { return compute_; }
-    TimeResults getPreporcessTimeResults() { return preprocess_; }
+    TimeResults getPreprocessTimeResults() { return preprocess_; }
 
 private:
     TimeResults compute_;
