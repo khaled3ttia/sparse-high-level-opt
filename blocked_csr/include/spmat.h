@@ -48,12 +48,13 @@ public:
     void setComputeTimes(uint32_t computeTimes) { computeTimes_ = computeTimes; }
     uint32_t getComputeTimes() { return computeTimes_; } 
     TimeResults getComputeTimeResults() { return compute_; }
-
+    TimeResults getPreporcessTimeResults() { return preprocess_; }
 
 private:
     TimeResults compute_;
     uint32_t computeTimes_ = 10;
     TimeResults preprocess_;
+    uint32_t preprocessTimes_ = 10;
     std::vector<I> coo_rows_;
     std::vector<I> coo_cols_;
     std::vector<T> coo_values_;

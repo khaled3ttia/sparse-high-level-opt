@@ -27,7 +27,7 @@ template <typename T, typename I> SpMat<T,I>::SpMat(const std::vector<I>& rows, 
 template <typename T, typename I> void SpMat<T,I>::tile(int rowsPerBlock, int colsPerBlock){
     rowsPerBlock_ = rowsPerBlock;
     colsPerBlock_ = colsPerBlock;
-    tileAndConvertToCSR_();
+    BENCHMARK( tileAndConvertToCSR_(), preprocessTimes_, preprocess_); 
     tiled_ = true;
 }
 
