@@ -164,7 +164,7 @@ int main(int argc, char **argv) {
               << std::endl;
     exit(-1);
   }
-  outFile << "rows,cols,mean,stdev,median,exitcode\n";
+  outFile << "rows,cols,preprocess,mean,stdev,median,exitcode\n";
 
   SpMat<float> myMat = SpMat<float>(filepath);
 
@@ -189,7 +189,7 @@ int main(int argc, char **argv) {
 
   evaluateGoldMKL(myMat, denseVec, mkl_result, mklTime);
 
-  outFile << "0,0," << std::fixed << std::setprecision(5) << mklTime.mean << ","
+  outFile << "0,0,0," << std::fixed << std::setprecision(5) << mklTime.mean << ","
           << std::fixed << std::setprecision(5) << mklTime.stdev << ","
           << std::fixed << std::setprecision(5) << mklTime.median << ","
           << "0\n";
@@ -223,6 +223,7 @@ int main(int argc, char **argv) {
       myMat.multiply(denseVec, result);
 
       TimeResults tileTime = myMat.getComputeTimeResults();
+      TimeResults preTime = myMat.getPreprocessTimeResults();
 
       int countErrs = verify(mkl_result, result, 0.001f);
       int exitcode = 0;
@@ -233,7 +234,9 @@ int main(int argc, char **argv) {
       } else {
         std::cout << "Verified Successfully! " << std::endl;
       }
-      outFile << rowsPerBlock << "," << colsPerBlock << "," << std::fixed
+      outFile << rowsPerBlock << "," << colsPerBlock << "," 
+          << std::fixed << std::setprecision(5) << preTime.mean << ","
+          << std::fixed
               << std::setprecision(5) << tileTime.mean << "," << std::fixed
               << std::setprecision(5) << tileTime.stdev << "," << std::fixed
               << std::setprecision(5) << tileTime.median << "," << exitcode
