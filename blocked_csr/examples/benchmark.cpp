@@ -120,7 +120,7 @@ int main(int argc, char **argv) {
   std::string filepath = "../small_sparse_matrix_8x8_empty_block.mtx";
   std::string outdir = "./results";
   uint32_t experiments_per_config = 10;
-  while ((opt = getopt(argc, argv, "i:o:n:r:c:h")) != -1) {
+  while ((opt = getopt(argc, argv, "i:o:n:r:w:c:u:h")) != -1) {
     switch (opt) {
     case 'i':
       filepath = optarg;
@@ -232,6 +232,7 @@ int main(int argc, char **argv) {
 
   min_col = std::max(min_col, 1);
   min_row = std::max(min_row, 1);
+
 
   for (int rowsPerBlock = min_row; rowsPerBlock <= max_row; rowsPerBlock *= 2) {
     for (int colsPerBlock = min_col; colsPerBlock <= max_col; colsPerBlock *= 2) {
