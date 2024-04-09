@@ -9,7 +9,7 @@ fi
 for input_file in `ls ${input_dir}/*.mtx`;
 do
 
-    ./benchmark.x -i $input_file -w 8192 -u 8192 -r 131072 -c 131072 -o tiling_peak/
+    ./benchmark.x -i $input_file -w 8192 -u 8192 -r 262144 -c 262144 -o tiling_peak/
 
 done
 
