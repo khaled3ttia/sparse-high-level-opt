@@ -13,7 +13,11 @@ def main(edgelist):
     dirname = os.path.dirname(edgelist)
 
     basename_no_ext = os.path.splitext(basename)[0]
-    k_val = int(basename_no_ext.split('_')[0].replace('k',''))
+    if basename_no_ext.startswith('k'):
+        k_val = int(basename_no_ext.split('_')[0].replace('k',''))
+    else:
+        k_val = int((basename_no_ext.split('.')[0]).split('_')[-1])
+
     nodes = int(math.pow(2, k_val))
 
     rows = data['from']
