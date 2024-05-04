@@ -5,11 +5,11 @@ source_dir="/mnt/bulk/snap_kron"
 
 # Destination server information
 dest_user="khaled"
-dest_server="dtn2.oscer.ou.edu"
+dest_server="schooner.oscer.ou.edu"
 dest_port="22"  # Change if the SSH port is different
 
 # Destination directory where chunks will be copied
-dest_dir="/scratch/khaled/snap_kron"
+dest_dir="/scratch/khaled"
 
 # Number of files per chunk
 files_per_chunk=10
@@ -24,7 +24,7 @@ num_chunks=$(( (total_files + files_per_chunk - 1) / files_per_chunk ))
 for (( i=0; i<num_chunks; i++ )); do
     # Create directory for chunk
     chunk_dir="$dest_dir/data_$((i+1))"
-    mkdir -p "$chunk_dir"
+    ssh -v -p "$dest_port" "$dest_user@$dest_server" "mkdir -p \"$chunk_dir\""
 
     # Calculate start and end indices for files in this chunk
     start=$((i * files_per_chunk + 1))
@@ -33,5 +33,5 @@ for (( i=0; i<num_chunks; i++ )); do
 
     # Copy files to chunk directory
     files=$(ls -1 "$source_dir"/*.mtx | sed -n "${start},${end}p")
-    scp -P "$dest_port" $files "$dest_user@$dest_server:$chunk_dir"
+    scp -v -P "$dest_port" $files "$dest_user@$dest_server:$chunk_dir"
 done
