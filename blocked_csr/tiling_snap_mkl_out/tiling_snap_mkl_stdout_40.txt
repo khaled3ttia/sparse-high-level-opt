@@ -1,0 +1,2 @@
+CPU Vendor is: 
+Cancelling the job because CPU vendor is not Intel.:(

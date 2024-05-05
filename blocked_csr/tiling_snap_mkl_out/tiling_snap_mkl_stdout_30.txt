@@ -1,0 +1,19 @@
+CPU Vendor is: 
+Cancelling the job because CPU vendor is not Intel.:(
+ 
+:: initializing oneAPI environment ...
+   slurm_script: BASH_VERSION = 4.2.46(2)-release
+   args: Using "$@" for setvars.sh arguments: 
+:: compiler -- latest
+:: mkl -- latest
+:: tbb -- latest
+:: oneAPI environment initialized ::
+ 
+g++ -std=c++17 -g  test_correctness.cpp -I ../common/include/ -I ../include/ -m64 -L/opt/oscer/software/imkl/2023.1.0/mkl/2023.1.0/lib/intel64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread -lm -ldl -o test_oo.x
+g++ -std=c++17 -g test_timing.cpp -I ../common/include/ -I ../include/ -m64 -L/opt/oscer/software/imkl/2023.1.0/mkl/2023.1.0/lib/intel64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread -lm -ldl -o test_time.x
+g++ -O3 -std=c++17 -g benchmark.cpp -I ../common/include/ -I ../include/ -m64 -L/opt/oscer/software/imkl/2023.1.0/mkl/2023.1.0/lib/intel64 -lmkl_intel_lp64 -lmkl_sequential -lmkl_core -lpthread -lm -ldl -o benchmark.x
+Loading file /scratch/khaled/blocked/data_30/EMAIL-INSIDE_1.mtx.....
+rows: 2, cols: 2, nnz: 2
+Input Matrix : EMAIL-INSIDE_1.mtx
+2 x 2 matrix with 2 non-zeros
+Loading file /scratch/khaled/blocked/data_30/EMAIL-INSIDE_20.mtx.....

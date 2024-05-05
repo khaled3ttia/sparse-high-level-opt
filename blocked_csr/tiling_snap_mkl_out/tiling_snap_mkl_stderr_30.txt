@@ -1,0 +1,14 @@
+awk: cmd. line:1: {print {}
+awk: cmd. line:1:        ^ syntax error
+benchmark.cpp: In function ‘int main(int, char**)’:
+benchmark.cpp:236:6: error: expected ‘(’ before ‘max_row’
+  236 |   if max_row > nrows {
+      |      ^~~~~~~
+      |      (
+benchmark.cpp:239:6: error: expected ‘(’ before ‘max_col’
+  239 |   if max_col > ncols {
+      |      ^~~~~~~
+      |      (
+make: *** [benchmark] Error 1
+slurmstepd: error: *** JOB 18931735 ON c849 CANCELLED AT 2024-05-04T18:50:16 ***
+slurmstepd: error: acct_gather_profile/influxdb _send_data: curl_easy_perform failed to send data (discarded). Reason: Timeout was reached
