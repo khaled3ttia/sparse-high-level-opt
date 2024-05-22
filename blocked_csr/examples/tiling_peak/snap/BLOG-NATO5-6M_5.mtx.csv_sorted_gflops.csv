@@ -1,0 +1,2 @@
+rows,cols,preprocess,mean,stdev,median,exitcode,k,gflops,Tile Size
+0,0,0,0.00103,0.00048,0.00081,0,5,0.15555555555555556,No Tiling
