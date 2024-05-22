@@ -233,10 +233,10 @@ int main(int argc, char **argv) {
   min_col = std::max(min_col, 1);
   min_row = std::max(min_row, 1);
 
-  if max_row > nrows {
+  if (max_row > nrows) {
       max_row = nrows;
   }
-  if max_col > ncols {
+  if (max_col > ncols) {
       max_col = ncols;
   }
 
