@@ -4,8 +4,8 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=128
 #SBATCH --mem=256G
-#SBATCH --output=/home/khaled/sparse-high-level-opt/blocked_csr/tiling_snap_mkl_stdout_%a.txt
-#SBATCH --error=/home/khaled/sparse-high-level-opt/blocked_csr/tiling_snap_mkl_stderr_%a.txt
+#SBATCH --output=/home/khaled/sparse-high-level-opt/blocked_csr/snap_std/tiling_snap_mkl_stdout_%a.txt
+#SBATCH --error=/home/khaled/sparse-high-level-opt/blocked_csr/snap_std/tiling_snap_mkl_stderr_%a.txt
 #SBATCH --time=12:00:00
 #SBATCH --job-name=tiling_snap_mkl
 #SBATCH --mail-user=khaled.abdelaal@ou.edu
