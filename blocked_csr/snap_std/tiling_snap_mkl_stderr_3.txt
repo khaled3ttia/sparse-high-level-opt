@@ -1,0 +1,7 @@
+./run_peak_sizes.sh: line 12: ./benchmark.x: Permission denied
+./run_peak_sizes.sh: line 12: ./benchmark.x: Permission denied
+./run_peak_sizes.sh: line 12: ./benchmark.x: Permission denied
+./run_peak_sizes.sh: line 12: ./benchmark.x: Permission denied
+./run_peak_sizes.sh: line 12: ./benchmark.x: Permission denied
+./run_peak_sizes.sh: line 12: ./benchmark.x: Permission denied
+./run_peak_sizes.sh: line 12: ./benchmark.x: Permission denied
