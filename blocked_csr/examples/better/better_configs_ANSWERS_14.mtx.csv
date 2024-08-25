@@ -1,0 +1,2 @@
+rows,cols,preprocess,mean,stdev,median,exitcode
+16384,16384,0.22584,0.1155,0.00823,0.11082,0
