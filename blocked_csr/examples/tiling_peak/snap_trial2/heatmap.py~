@@ -1,0 +1,72 @@
+import pandas as pd 
+import glob
+import os 
+import matplotlib.pyplot as plt
+import seaborn as sns
+import argparse
+
+def getNNZ(stats_df, base_filename):
+    nnz = stats_df[stats_df['base_filename'] == base_filename]['nnz'].iloc[0]
+    return nnz
+
+
+def loadStats(stats_file):
+    df = pd.read_csv(stats_file)
+    df['base_filename'] = df['filename'].apply(lambda x: os.path.basename(x))
+
+    return df
+
+def heatmap(df, base_input_filename):
+    df = df.drop(df[(df['rows'] == 0) & (df['cols'] == 0)].index)
+    # some good cmap options
+    cmaps= ['viridis', 'cividis', 'plasma', 'inferno', 'turbo']
+
+    heatmap_data = df.pivot(index='rows', columns='cols', values='gflops')
+    fig, ax = plt.subplots()
+    sns.heatmap(heatmap_data, cmap=cmaps[4], ax=ax)
+    ax.set_xlabel('Columns Per Tile')
+    ax.set_ylabel('Rows Per Tile')
+    fig_filename = f'{base_input_filename}_heatmap.png'
+    fig.savefig(fig_filename, bbox_inches='tight')
+    print(f'Figure saved to {fig_filename}..')
+    plt.close(fig)
+
+    # Another heatmap using speedup
+    heatmap_speedup_data = df.pivot(index='rows', columns='cols', values='speedup')
+    fig , ax = plt.subplots()
+
+    sns.heatmap(heatmap_speedup_data, cmap=cmaps[4], ax=ax)
+    ax.set_xlabel('Columns Per Tile')
+    ax.set_ylabel('Rows Per Tile')
+    fig_filename = f'{base_input_filename}_speedup_heatmap.png'
+    fig.savefig(fig_filename, bbox_inches='tight')
+    print(f'Figure saved to {fig_filename}..')
+    
+
+    plt.close(fig)
+def main(args):
+    summary_file = args.i
+    stats_file = args.s
+    stats_df = loadStats(stats_file)
+
+
+    summary_df = pd.read_csv(summary_file)
+    for index, row in summary_df.iterrows():
+        input_file = row['file_name']
+        base_input_filename, _ = os.path.splitext(input_file)
+        nnz = getNNZ(stats_df, base_input_filename)
+    
+        input_results = pd.read_csv(input_file)
+        input_results['gflops'] = (2 * nnz) / (input_results['median'] * 1e6)
+        baseline_time = input_results[(input_results['rows'] == 0) & (input_results['cols'] == 0)]['median'].iloc[0]
+        print(f'baseline = {baseline_time}')
+        input_results['speedup'] = baseline_time / input_results['median'] 
+        heatmap(input_results.copy(), base_input_filename)
+if __name__ == '__main__':
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--i', type=str, help='Input Summary File Path')
+    parser.add_argument('--s', type=str, help='Stats File Path')
+    args = parser.parse_args()
+
+    main(args)
